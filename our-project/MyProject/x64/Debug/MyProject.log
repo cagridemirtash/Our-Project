@@ -1,0 +1,4 @@
+﻿  Main.cpp
+ICBYTESx64Debug.lib(icb_gui.obj) : warning LNK4099: PDB '', 'ICBYTESx64Debug.lib(icb_gui.obj)' ile veya '' üzerinde bulunamadı; nesne, hata ayıklama bilgileri yokmuş gibi bağlanıyor
+ICBYTESx64Debug.lib(icbytes.obj) : warning LNK4099: PDB '', 'ICBYTESx64Debug.lib(icbytes.obj)' ile veya '' üzerinde bulunamadı; nesne, hata ayıklama bilgileri yokmuş gibi bağlanıyor
+  MyProject.vcxproj -> C:\Users\SuperCharger\Desktop\projects\our-project\x64\Debug\MyProject.exe
