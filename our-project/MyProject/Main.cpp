@@ -3,7 +3,9 @@
 #include <vector>
 #include <random>
 
+/* ICBYTES DEÐÝÞKENLERÝ*/
 int MLE;
+#pragma region Fonksiyonlar
 void OnClickButton();
 void SevenSegmentDisplay(HWND hwnd, int x, int y, int segmentSize, int value);
 void DrawSegment(HDC hdc, int x, int y, int width, int height);
@@ -12,13 +14,18 @@ void SegmentDisplay(HDC hdc, int gap, int segmentWidth, int segmentHeight, std::
 void ClearSegment(HWND hwnd, int x, int y, int segmentSize, int value, std::vector<int> segmentsToDraw);
 VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 VOID CALLBACK TimerProcClean(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+#pragma endregion
 
+#pragma region Sabit Deðiþkenler
 int currentValue = 0;
 int x = 200;
 int y = 200;
 int height = 300;
 int start_thread = 0;
 int start_thread_end_time = 1000;
+#pragma endregion
+
+#pragma region Vektörler
 std::vector<std::vector<int>> segmentValues = {
         {1, 1, 1, 0, 1, 1, 1}, // 0
         {0, 1, 1, 0, 0, 0, 0}, // 1
@@ -31,6 +38,8 @@ std::vector<std::vector<int>> segmentValues = {
         {1, 1, 1, 1, 1, 1, 1}, // 8
         {1, 1, 1, 1, 0, 1, 1}  // 9
 };
+#pragma endregion
+
 
 void ICGUI_Create() {
 
