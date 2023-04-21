@@ -1,147 +1,114 @@
 #include <iostream>
 #include "icb_gui.h"
-#include <vector>
-#include <random>
 
-/* ICBYTES DEÐÝÞKENLERÝ*/
-int MLE;
-#pragma region Fonksiyonlar
-void OnClickButton();
-void SevenSegmentDisplay(HWND hwnd, int x, int y, int segmentSize, int value);
-void DrawSegment(HDC hdc, int x, int y, int width, int height);
-void CustomPaintFunction(HWND hwnd, int value);
-void SegmentDisplay(HDC hdc, int gap, int segmentWidth, int segmentHeight, std::vector<int> segmentsToDraw);
-void ClearSegment(HWND hwnd, int x, int y, int segmentSize, int value, std::vector<int> segmentsToDraw);
-VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-VOID CALLBACK TimerProcClean(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-#pragma endregion
+int FRM;
+ICBYTES draw;
+void DrawRect();
+void butonfonk1();
 
-#pragma region Sabit Deðiþkenler
-int currentValue = 0;
-int x = 200;
-int y = 200;
-int height = 300;
-int start_thread = 0;
-int start_thread_end_time = 1000;
-#pragma endregion
+#pragma region Seven Segment Matrixi
 
-#pragma region Vektörler
-std::vector<std::vector<int>> segmentValues = {
-        {1, 1, 1, 0, 1, 1, 1}, // 0
-        {0, 1, 1, 0, 0, 0, 0}, // 1
-        {1, 1, 0, 1, 1, 0, 1}, // 2
-        {1, 1, 1, 1, 0, 0, 1}, // 3
-        {0, 1, 1, 1, 0, 1, 0}, // 4
-        {1, 0, 1, 1, 0, 1, 1}, // 5
-        {1, 0, 1, 1, 1, 1, 1}, // 6
-        {1, 1, 1, 0, 0, 0, 0}, // 7
-        {1, 1, 1, 1, 1, 1, 1}, // 8
-        {1, 1, 1, 1, 0, 1, 1}  // 9
-};
 #pragma endregion
 
 
-void ICGUI_Create() {
-
+void ICGUI_Create()
+{
+	ICG_MWColor(100, 100, 100);
+	ICG_MWSize(820, 420);
+	ICG_MW_RemoveTitleBar();
 }
+
+#pragma region Kademe Olayýnýn Deðiþken olarak alýndýðý kýsým
+//void KademeFonk(int kademe)
+//{
+//	ICG_SetWindowText(SLE1, "");
+//	//ICG_printf(SLE1, "%d", kademe);
+//	draw = 0xff00 + kademe * 2.55;
+//	DisplayImage(FRM1, draw);
+//}
+#pragma endregion
 
 void ICGUI_main()
 {
-    ICG_MWSize(400, 300);
-    ICG_MWPosition(100, 100);
-    ICG_MWTitle(TEXT("Seven-Segment Display Example"));
-    ICG_Button(150, 50, 100, 30, "Update",OnClickButton);
+	CreateImage(draw, 800, 400, ICB_UINT);
+#pragma region Kademe Kodu
+	/*SLE1 = ICG_SLEditBorder(5, 5, 125, 25, "");
+	ICG_TrackBarH(5, 45, 125, 40, "", KademeFonk);
+	FRM1 = ICG_FrameMedium(150, 20, 200, 200);
+	draw = 0xff00;
+	DisplayImage(FRM1, draw);*/
+#pragma endregion
+	FRM = ICG_FrameMedium(5, 5, 400, 200);
+	draw = 0xc00;
+	/*FillRect(draw, 50, 25, 125, 25, 0xffaa);
+	FillRect(draw, 150, 50, 25, 100, 0xffaa);
+	FillRect(draw, 150, 175, 25, 100, 0xffaa);*/
+#pragma region ExitButton
+	int ExitButton;
+	ExitButton = ICG_BitmapButton(785, 8, 25, 25, butonfonk1);
+	Line(draw, 785, 785, 810, 810, 0xff);
+	SetButtonBitmap(ExitButton, draw);
+#pragma endregion
+
+#pragma region Boþ Þekil
+	Rect(draw, 50, 25, 125, 25, 0xffff);
+	Rect(draw, 50, 50, 25, 100, 0xffff);
+	Rect(draw, 150, 50, 25, 100, 0xffff);
+
+	Rect(draw, 75, 150, 75, 25, 0xffff);
+
+	Rect(draw, 50, 175, 25, 100, 0xffff);
+	Rect(draw, 150, 175, 25, 100, 0xffff);
+	Rect(draw, 50, 275, 125, 25, 0xffff);
+#pragma endregion
+#pragma region Boþ Þekil 2
+	Rect(draw, 200, 25, 125, 25, 0xffff);
+	Rect(draw, 200, 50, 25, 100, 0xffff);
+	Rect(draw, 300, 50, 25, 100, 0xffff);
+
+	Rect(draw, 225, 150, 75, 25, 0xffff);
+
+	Rect(draw, 200, 175, 25, 100, 0xffff);
+	Rect(draw, 300, 175, 25, 100, 0xffff);
+	Rect(draw, 200, 275, 125, 25, 0xffff);
+#pragma endregion
+#pragma region Orta Noktalar
+	Rect(draw, 350, 125, 25, 25, 0xffff);
+	Rect(draw, 350, 175, 25, 25, 0xffff);
+#pragma endregion
+#pragma region Boþ Þekil 3
+	Rect(draw, 400, 25, 125, 25, 0xffff);
+	Rect(draw, 400, 50, 25, 100, 0xffff);
+	Rect(draw, 500, 50, 25, 100, 0xffff);
+
+	Rect(draw, 425, 150, 75, 25, 0xffff);
+
+	Rect(draw, 400, 175, 25, 100, 0xffff);
+	Rect(draw, 500, 175, 25, 100, 0xffff);
+	Rect(draw, 400, 275, 125, 25, 0xffff);
+#pragma endregion
+#pragma region Boþ Þekil 4
+	Rect(draw, 550, 25, 125, 25, 0xffff);
+	Rect(draw, 550, 50, 25, 100, 0xffff);
+	Rect(draw, 650, 50, 25, 100, 0xffff);
+
+	Rect(draw, 575, 150, 75, 25, 0xffff);
+
+	Rect(draw, 550, 175, 25, 100, 0xffff);
+	Rect(draw, 650, 175, 25, 100, 0xffff);
+	Rect(draw, 550, 275, 125, 25, 0xffff);
+#pragma endregion
+	ICG_Button(700,50,60,40,"Baþlat",DrawRect);
+	DisplayImage(FRM, draw);
 }
 
-UINT random_interval() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distrib(1000, 1050);
-    return distrib(gen);
+void DrawRect(){
+
 }
 
-void OnClickButton() 
-{
-    SetTimer(NULL, 0, random_interval(), TimerProcClean);
-    SetTimer(NULL, 0, 1000, TimerProc);
+void butonfonk1() {
+	exit(0);
 }
 
-void SevenSegmentDisplay(HWND hwnd, int x, int y, int segmentSize, int value)
-{
-    HDC hdc = GetDC(hwnd);
-    SetBkMode(hdc, TRANSPARENT);
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-    HBRUSH hBrush = CreateSolidBrush(RGB(255, 255, 255));
-    SelectObject(hdc, hPen);
-    SelectObject(hdc, hBrush);
 
-    int segmentWidth = segmentSize;
-    int segmentHeight = segmentSize / 4;
-    int gap = segmentHeight / 2;
 
-    std::vector<int> segmentsToDraw = segmentValues[value];
-
-    // Draw segments
-    SegmentDisplay(hdc, gap, segmentWidth, segmentHeight, segmentsToDraw);
-
-    // Clean up GDI objects
-    DeleteObject(hBrush);
-    DeleteObject(hPen);
-    ReleaseDC(hwnd, hdc);
-}
-
-void SegmentDisplay(HDC hdc, int gap, int segmentWidth, int segmentHeight, std::vector<int> segmentsToDraw) {
-    if (segmentsToDraw[0]) DrawSegment(hdc, x + gap, y, segmentWidth - 2 * gap, segmentHeight); // A
-    if (segmentsToDraw[1]) DrawSegment(hdc, x + segmentWidth - segmentHeight, y + gap, segmentHeight, segmentWidth - gap); // B
-    if (segmentsToDraw[2]) DrawSegment(hdc, x + segmentWidth - segmentHeight, y + segmentWidth + gap, segmentHeight, segmentWidth - gap); // C
-    if (segmentsToDraw[3]) DrawSegment(hdc, x + gap, y + 2 * segmentWidth, segmentWidth - 2 * gap, segmentHeight); // D
-    if (segmentsToDraw[4]) DrawSegment(hdc, x, y + segmentWidth + gap, segmentHeight, segmentWidth - gap); // E
-    if (segmentsToDraw[5]) DrawSegment(hdc, x, y + gap, segmentHeight, segmentWidth - gap); // F
-    if (segmentsToDraw[6]) DrawSegment(hdc, x + gap, y + segmentWidth, segmentWidth - 2 * gap, segmentHeight); // G
-}
-
-void DrawSegment(HDC hdc, int x, int y, int width, int height) {
-    Rectangle(hdc, x, y, x + width, y + height);
-}
-
-void CustomPaintFunction(HWND hwnd, int value) {
-    SevenSegmentDisplay(hwnd, x, y, height, value);
-}
-
-void ClearPaintFunction(HWND hwnd, int value)
-{
-    std::vector<int> segmentsToDraw = segmentValues[value];
-    ClearSegment(hwnd, x, y, height, value, segmentsToDraw);
-}
-
-void ClearSegment(HWND hwnd, int x, int y, int segmentSize,int value, std::vector<int> segmentsToDraw)
-{
-    int segmentWidth = segmentSize;
-    int segmentHeight = segmentSize / 4;
-    int gap = segmentHeight / 2;
-    HDC hdc = GetDC(hwnd);
-    SetBkMode(hdc, TRANSPARENT);
-    HPEN hWPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-    HBRUSH hWBrush = CreateSolidBrush(RGB(255, 0, 0));
-    SelectObject(hdc, hWPen);
-    SelectObject(hdc, hWBrush);
-    SegmentDisplay(hdc, gap, segmentWidth, segmentHeight, segmentsToDraw);
-    DeleteObject(hWBrush);
-    DeleteObject(hWPen);
-    ReleaseDC(hwnd, hdc);
-}
-
-VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
-    CustomPaintFunction(ICG_GetMainWindow(), currentValue);
-    currentValue += 1;
-    if (currentValue == 10) {
-        exit(0);
-    }
-}
-
-VOID CALLBACK TimerProcClean(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
-    ClearPaintFunction(ICG_GetMainWindow(), currentValue);
-    if (currentValue == 10) {
-        exit(0);
-    }
-}
