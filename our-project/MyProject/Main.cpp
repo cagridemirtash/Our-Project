@@ -3,10 +3,62 @@
 
 int FRM;
 ICBYTES draw;
-void DrawRect();
-void butonfonk1();
+void DrawRect(void *draw);
+void Exit();
+bool isStart = false;
+#pragma region Seven Segment Matrixleri
 
-#pragma region Seven Segment Matrixi
+ICBYTES sevenSegmentDisplay{
+	{1,1,1,0,1,1,1},
+	{0,0,1,0,0,1,0},
+	{1,0,1,1,1,0,1},
+	{1,0,1,1,0,1,1},
+	{0,1,1,1,0,1,0},
+	{1,1,0,1,0,1,1},
+	{1,1,0,1,1,1,1},
+	{1,0,1,0,0,1,0},
+	{1,1,1,1,1,1,1},
+	{1,1,1,1,0,1,1}
+};
+#pragma endregion
+#pragma region Sekil Matrixleri
+ICBYTES ilkSekil = {
+	{50, 25, 125, 25},
+	{50, 50, 25, 100},
+	{150, 50, 25, 100},
+	{75, 150, 75, 25},
+	{50, 175, 25, 100},
+	{150, 175, 25, 100},
+	{50, 275, 125, 25}
+};
+
+ICBYTES ikinciSekil = {
+	{200, 25, 125, 25 },
+	{200, 50, 25, 100},
+	{300, 50, 25, 100},
+	{225, 150, 75, 25},
+	{200, 175, 25, 100},
+	{300, 175, 25, 100},
+	{200, 275, 125, 25}
+};
+ICBYTES ucuncuSekil = {
+	{400, 25, 125, 25 },
+	{400, 50, 25, 100},
+	{500, 50, 25, 100},
+	{425, 150, 75, 25},
+	{400, 175, 25, 100},
+	{500, 175, 25, 100},
+	{400, 275, 125, 25}
+};
+ICBYTES dorduncuSekil = {
+	{550, 25, 125, 25 },
+	{550, 50, 25, 100},
+	{650, 50, 25, 100},
+	{575, 150, 75, 25},
+	{550, 175, 25, 100},
+	{650, 175, 25, 100},
+	{550, 275, 125, 25}
+};
 
 #pragma endregion
 
@@ -45,7 +97,7 @@ void ICGUI_main()
 	FillRect(draw, 150, 175, 25, 100, 0xffaa);*/
 #pragma region ExitButton
 	int ExitButton;
-	ExitButton = ICG_BitmapButton(785, 8, 25, 25, butonfonk1);
+	ExitButton = ICG_BitmapButton(785, 8, 25, 25, Exit);
 	Line(draw, 785, 785, 810, 810, 0xff);
 	SetButtonBitmap(ExitButton, draw);
 #pragma endregion
@@ -98,15 +150,61 @@ void ICGUI_main()
 	Rect(draw, 650, 175, 25, 100, 0xffff);
 	Rect(draw, 550, 275, 125, 25, 0xffff);
 #pragma endregion
-	ICG_Button(700,50,60,40,"Baþlat",DrawRect);
+	ICG_Button(700,50,60,40,"Baþlat",DrawRect,(void*)&draw);
 	DisplayImage(FRM, draw);
 }
 
-void DrawRect(){
+void DrawRect(void *draw){
+	for (int i = 1; i < 8; i++) {
+		if (sevenSegmentDisplay.I(i, 1) == 1) {
+			int x1 = ilkSekil.I(1, i);
+			int y1 = ilkSekil.I(2, i);
+			int width = ilkSekil.I(3, i);
+			int height = ilkSekil.I(4, i);
+			FillRect(*(ICBYTES*)draw, x1, y1, width, height, 0xffaa);
+		}
+	}for (int i = 1; i < 8; i++) {
+		if (sevenSegmentDisplay.I(i, 2) == 1) {
+			int x1 = ikinciSekil.I(1, i);
+			int y1 = ikinciSekil.I(2, i);
+			int width = ikinciSekil.I(3, i);
+			int height = ikinciSekil.I(4, i);
+			FillRect(*(ICBYTES*)draw, x1, y1, width, height, 0xffaa);
+		}
+	}for (int i = 1; i < 8; i++) {
+		if (sevenSegmentDisplay.I(i, 4) == 1) {
+			int x1 = ucuncuSekil.I(1, i);
+			int y1 = ucuncuSekil.I(2, i);
+			int width = ucuncuSekil.I(3, i);
+			int height = ucuncuSekil.I(4, i);
+			FillRect(*(ICBYTES*)draw, x1, y1, width, height, 0xffaa);
+		}
+	}for (int i = 1; i < 8; i++) {
+		if (sevenSegmentDisplay.I(i, 1) == 1) {
+			int x1 = dorduncuSekil.I(1, i);
+			int y1 = dorduncuSekil.I(2, i);
+			int width = dorduncuSekil.I(3, i);
+			int height = dorduncuSekil.I(4, i);
+			FillRect(*(ICBYTES*)draw, x1, y1, width, height, 0xffaa);
+		}
+	}
+	int ExitButton;
+	ExitButton = ICG_BitmapButton(785, 8, 25, 25, Exit);
+	Line(*(ICBYTES*)draw, 785, 785, 810, 810, 0xff);
+	SetButtonBitmap(ExitButton, *(ICBYTES*)draw);
+	DisplayImage(FRM, *(ICBYTES*)draw);
 
+	if (isStart) {
+		ICG_Button(700, 50, 60, 40, "Baþlat", DrawRect, (void*)&draw);
+		isStart = false;
+	}
+	else {
+		ICG_Button(700, 50, 60, 40, "Durdur", DrawRect, (void*)&draw);
+		isStart = true;
+	}
 }
 
-void butonfonk1() {
+void Exit() {
 	exit(0);
 }
 
